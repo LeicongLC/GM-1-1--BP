@@ -29,7 +29,7 @@ pip install pandas scikit-learn torch matplotlib numpy
 
 1. 确保您已安装所有依赖。
 2. 将数据文件`data.csv`放在与笔记本相同的目录下。
-3. 通过Jupyter Notebook或JupyterLab打开`1.1.ipynb`。
+3. 通过Jupyter Notebook或JupyterLab打开`GM-BP.ipynb`。
 4. 按顺序运行笔记本中的单元格。
 
 ## 项目细节
