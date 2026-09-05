@@ -1,52 +1,74 @@
-# 机器学习项目：数据预处理与GM-BP模型
+# GM(1,1)-BP Forecasting
 
-## 项目概述
+基于灰色预测模型 GM(1,1) 与 BP 神经网络的年度数据预测项目。仓库同时保留原始 Jupyter Notebook，并提供一个可重复运行的 Python 命令行流程，便于复现实验、检查指标和生成图表。
 
-此项目包括数据的预处理、使用GM(1,1)和BP神经网络模型进行数据分析和预测，以及结果的可视化展示。项目旨在展示如何结合传统的机器学习方法和深度学习技术来进行时间序列预测。
+## 项目结构
+
+```text
+.
+├── data.csv                 # 输入数据：year、X1-X6、Y
+├── GM-BP.ipynb              # 原始 notebook，保留用于学习和过程展示
+├── src/
+│   └── gm_bp_pipeline.py    # 可复现的 GM(1,1)-BP 流程
+├── 结果/                    # 原始实验结果
+├── results/                 # 脚本运行后生成的结果（默认被 git 忽略）
+├── requirements.txt
+└── .gitignore
+```
 
 ## 环境准备
 
-本项目使用Python进行开发，需要安装以下库：
-
-- pandas
-- sklearn
-- torch
-- matplotlib
-- numpy
-
-您可以使用pip安装上述依赖：
+建议使用 Python 3.10 或更高版本，并安装项目依赖：
 
 ```bash
-pip install pandas scikit-learn torch matplotlib numpy
+python -m pip install -r requirements.txt
 ```
 
-## 文件结构
+流程使用 `scikit-learn` 的 `MLPRegressor` 实现 BP 风格的反向传播网络，不再依赖 PyTorch，降低环境配置成本。
 
-- `data.csv`：原始数据文件
-- `1.1.ipynb`：主要的Jupyter笔记本，包含项目代码
+## 快速运行
 
-## 如何运行
+在仓库根目录执行：
 
-1. 确保您已安装所有依赖。
-2. 将数据文件`data.csv`放在与笔记本相同的目录下。
-3. 通过Jupyter Notebook或JupyterLab打开`GM-BP.ipynb`。
-4. 按顺序运行笔记本中的单元格。
+```bash
+python -m src.gm_bp_pipeline --data data.csv --output results
+```
 
-## 项目细节
+常用参数：
 
-### 数据预处理
+```bash
+python -m src.gm_bp_pipeline \
+  --data data.csv \
+  --output results \
+  --future-steps 10 \
+  --test-size 0.3 \
+  --random-state 42
+```
 
-项目从加载数据集开始，包括数据清洗、特征标准化，并使用`train_test_split`函数划分数据集。
+流程会先按年份排序，再使用较早年份训练、较晚年份测试，避免随机打乱时间序列。GM(1,1) 用于外推 `X1`-`X6` 的未来值，BP 网络使用这些特征预测目标列 `Y`。
 
-### 模型定义
+## 输出文件
 
-- **GM(1,1)模型**：用于预测单个特征列的未来值。
-- **BP神经网络模型**：一个深度学习模型，用于根据输入特征预测输出。
+脚本会在 `results/` 中生成：
 
-### 训练与评估
+- `metrics.csv`：MSE、RMSE、MAE、R² 和解释方差
+- `test_predictions.csv`：测试集真实值、预测值和绝对误差
+- `gm_feature_forecast.csv`：GM(1,1) 对各输入特征的未来预测
+- `predicted_values.csv`：未来年份的 `Y` 预测
+- `loss.png`：BP 训练损失曲线
+- `actual_vs_predicted.png`：测试集真实值与预测值对比
+- `future_forecast.png`：未来预测曲线
 
-使用PyTorch框架实例化BP模型，训练模型，并评估其性能。性能评估包括MSE、RMSE、MAE、R²分数和解释方差分数。
+## 数据格式
 
-### 结果可视化
+输入 CSV 必须包含以下列：
 
-项目使用matplotlib库绘制训练过程中的损失下降图、真实值与预测值的散点图，以及未来值的预测折线图。
+```text
+year,X1,X2,X3,X4,X5,X6,Y
+```
+
+GM(1,1) 要求用于外推的 `X1`-`X6` 为正数，数据不能在必需列中包含缺失值。
+
+## Notebook
+
+`GM-BP.ipynb` 是原始实验 notebook，适合逐单元查看数据处理、模型训练和可视化过程。推荐使用 `src/gm_bp_pipeline.py` 作为批量运行和结果复现入口。
