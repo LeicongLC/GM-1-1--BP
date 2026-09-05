@@ -8,6 +8,7 @@ original notebook.
 from __future__ import annotations
 
 import argparse
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Tuple
@@ -15,6 +16,7 @@ from typing import Dict, List, Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from sklearn.exceptions import ConvergenceWarning
 from sklearn.metrics import explained_variance_score
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
@@ -25,6 +27,8 @@ from sklearn.preprocessing import StandardScaler
 
 FEATURE_COLUMNS = ["X1", "X2", "X3", "X4", "X5", "X6"]
 REQUIRED_COLUMNS = ["year"] + FEATURE_COLUMNS + ["Y"]
+
+warnings.filterwarnings("ignore", category=ConvergenceWarning)
 
 
 @dataclass(frozen=True)

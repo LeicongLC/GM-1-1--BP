@@ -18,13 +18,13 @@
 
 ## 环境准备
 
-建议使用 Python 3.10 或更高版本，并安装项目依赖：
+建议使用 Python 3.7 或更高版本，并安装项目依赖：
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-流程使用 `scikit-learn` 的 `MLPRegressor` 实现 BP 风格的反向传播网络，不再依赖 PyTorch，降低环境配置成本。
+流程使用 `scikit-learn` 的 `MLPRegressor` 实现 BP 风格的反向传播网络，不再依赖 PyTorch，降低环境配置成本。当前依赖约束已按 Python 3.7 兼容范围设置。
 
 ## 快速运行
 
